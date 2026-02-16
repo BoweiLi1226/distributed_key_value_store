@@ -1,6 +1,0 @@
-[requires]
-protobuf/6.32.1
-
-[generators]
-CMakeDeps
-CMakeToolchain
