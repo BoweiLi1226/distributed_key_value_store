@@ -11,13 +11,19 @@ SharedKVStore::get(const std::string &key) const {
   return store.get(key);
 }
 
-inline void SharedKVStore::put(std::string_view key, std::string_view value) {
+inline void SharedKVStore::put(const std::string &key,
+                               const std::string &value) {
   std::unique_lock<std::shared_mutex> lock(rw_lock);
   store.put(key, value);
 }
 
 inline void SharedKVStore::put(std::string &&key, std::string &&value) {
-  std::unique_lock<std::shared_mutex> lock(rw_lock);
+  std::lock_guard<std::shared_mutex> lock(rw_lock);
   store.put(std::move(key), std::move(value));
+}
+
+inline void SharedKVStore::remove(const std::string &key) {
+  std::lock_guard<std::shared_mutex> lock(rw_lock);
+  store.remove(key);
 }
 } // namespace distributed_key_value_store::kv_store

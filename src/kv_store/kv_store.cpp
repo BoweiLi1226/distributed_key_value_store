@@ -1,6 +1,5 @@
 #include "distributed_key_value_store/kv_store/kv_store.h"
 #include <format>
-#include <string_view>
 
 namespace distributed_key_value_store::kv_store {
 inline std::expected<std::string, std::string>
@@ -13,11 +12,13 @@ KVStore::get(const std::string &key) const {
   }
 }
 
-inline void KVStore::put(std::string_view key, std::string_view value) {
+inline void KVStore::put(const std::string &key, const std::string &value) {
   data.emplace(key, value);
 }
 
 inline void KVStore::put(std::string &&key, std::string &&value) {
   data.emplace(std::move(key), std::move(value));
 }
+
+inline void KVStore::remove(const std::string &key) { data.erase(key); }
 } // namespace distributed_key_value_store::kv_store

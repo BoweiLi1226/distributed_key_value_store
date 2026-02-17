@@ -7,9 +7,11 @@ public:
   [[nodiscard]] std::expected<std::string, std::string>
   get(const std::string &key) const;
 
-  void put(std::string_view key, std::string_view value);
+  void put(const std::string &key, const std::string &value);
 
   void put(std::string &&key, std::string &&value);
+
+  void remove(const std::string &key);
 
 private:
   KVStore store;
