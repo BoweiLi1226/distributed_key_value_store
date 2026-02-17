@@ -4,6 +4,7 @@
     "dependencies": [
         "protobuf",
         "boost-system",
-        "boost-thread"
+        "boost-thread",
+        "boost-asio"
     ]
 }
