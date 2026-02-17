@@ -2,6 +2,8 @@
     "name": "distributed-key-value-store",
     "version": "0.1.0",
     "dependencies": [
-        "protobuf"
+        "protobuf",
+        "boost-system",
+        "boost-thread"
     ]
 }
