@@ -2,9 +2,9 @@
     "name": "distributed-key-value-store",
     "version": "0.1.0",
     "dependencies": [
+        "gtest",
         "protobuf",
         "boost-system",
-        "boost-thread",
         "boost-asio"
     ]
 }

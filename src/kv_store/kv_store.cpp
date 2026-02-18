@@ -1,24 +1,48 @@
 #include "distributed_key_value_store/kv_store/kv_store.h"
-#include <format>
+#include "distributed_key_value_store/kv_store/dispatch_command.hpp"
+#include "distributed_key_value_store/kv_store/utils.h"
+#include "kv_command.pb.h"
+#include <expected>
 
 namespace distributed_key_value_store::kv_store {
-inline std::expected<std::string, std::string>
-KVStore::get(const std::string &key) const {
+
+std::expected<Result, Error> KVStore::get(const std::string &key) const {
   auto it = data.find(key);
   if (it != data.end()) {
-    return it->second;
+    return Result(it->second);
   } else {
-    return std::unexpected(std::format("Key {} does not exist.", key));
+    return std::unexpected(Error::KEY_DOES_NOT_EXIST);
   }
 }
 
-inline void KVStore::put(const std::string &key, const std::string &value) {
-  data.emplace(key, value);
+std::expected<Result, Error> KVStore::put(std::string key, std::string value) {
+  auto it = data.find(key);
+  if (it != data.end()) {
+    if (it->second == value) {
+      return std::unexpected(Error::DUPLICATE_KEY_VALUE_PAIR);
+    } else {
+      it->second = std::move(value);
+      return Result(it->second);
+    }
+  } else {
+    auto [new_it, _] = data.emplace(std::move(key), std::move(value));
+    return Result(new_it->second);
+  }
 }
 
-inline void KVStore::put(std::string &&key, std::string &&value) {
-  data.emplace(std::move(key), std::move(value));
+std::expected<Result, Error> KVStore::remove(const std::string &key) {
+  auto it = data.find(key);
+  if (it != data.end()) {
+    Result result(it->second);
+    data.erase(it);
+    return result;
+  } else {
+    return std::unexpected(Error::KEY_DOES_NOT_EXIST);
+  }
 }
 
-inline void KVStore::remove(const std::string &key) { data.erase(key); }
+std::expected<Result, Error>
+KVStore::process(kv_command::KVCommand &kv_command) {
+  return dispatch_command(this, kv_command);
+}
 } // namespace distributed_key_value_store::kv_store
