@@ -8,18 +8,18 @@
 namespace distributed_key_value_store::kv_store {
 class KVStore final {
 public:
-  [[nodiscard]] std::expected<Result, Error> get(const std::string &key) const;
+  [[nodiscard]] std::expected<Result, Error> get(std::string key) const;
 
   [[nodiscard]] std::expected<Result, Error> put(std::string key,
                                                  std::string value);
 
-  [[nodiscard]] std::expected<Result, Error> remove(const std::string &key);
+  [[nodiscard]] std::expected<Result, Error> remove(std::string key);
 
   [[nodiscard]] std::expected<Result, Error>
-  process(kv_command::KVCommand &kv_command);
+  process(kv_command::KVCommand kv_command);
 
 private:
-  std::unordered_map<std::string, std::string> data;
+  std::unordered_map<std::string, std::string> data_;
 };
 
 } // namespace distributed_key_value_store::kv_store

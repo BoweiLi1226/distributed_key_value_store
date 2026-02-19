@@ -45,14 +45,18 @@ add_library(
 
 target_include_directories(kv_store_lib PUBLIC "${INCLUDE_DIR}")
 
-target_link_libraries(kv_store_lib PUBLIC proto_objects)
+target_link_libraries(kv_store_lib PUBLIC proto_objects Boost::system)
 
 add_executable(main src/main.cpp)
 target_link_libraries(main PRIVATE kv_store_lib)
 
 enable_testing()
 
-file(GLOB_RECURSE TEST_SOURCES "tests/*.cpp")
+set(KV_STORE_TEST_DIR "tests/kv_store")
+set(TEST_SOURCES
+    "${KV_STORE_TEST_DIR}/kv_store_test.cpp"
+    "${KV_STORE_TEST_DIR}/shared_kv_store_test.cpp"
+)
 
 if(NOT TEST_SOURCES)
     message(
