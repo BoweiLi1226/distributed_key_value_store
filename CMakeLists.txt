@@ -37,6 +37,12 @@ target_include_directories(proto_objects PUBLIC "${PROTO_GEN_DIR}")
 
 target_link_libraries(proto_objects PUBLIC protobuf::libprotobuf)
 
+add_library(primitives_lib INTERFACE)
+
+target_include_directories(primitives_lib INTERFACE "${INCLUDE_DIR}")
+
+target_link_libraries(primitives_lib INTERFACE Boost::system)
+
 add_library(
     kv_store_lib
     "${KV_STORE_LIB_DIR}/kv_store.cpp"
@@ -45,7 +51,7 @@ add_library(
 
 target_include_directories(kv_store_lib PUBLIC "${INCLUDE_DIR}")
 
-target_link_libraries(kv_store_lib PUBLIC proto_objects Boost::system)
+target_link_libraries(kv_store_lib PUBLIC proto_objects primitives_lib)
 
 add_executable(main src/main.cpp)
 target_link_libraries(main PRIVATE kv_store_lib)

@@ -1,5 +1,4 @@
 #include "kv_store/kv_store.h"
-#include "kv_command.pb.h"
 #include "kv_store/utils.h"
 #include <expected>
 
@@ -37,24 +36,6 @@ std::expected<Result, Error> KVStore::remove(std::string key) {
     return result;
   } else {
     return std::unexpected(Error::KEY_DOES_NOT_EXIST);
-  }
-}
-
-std::expected<Result, Error>
-KVStore::process(kv_command::KVCommand kv_command) {
-  switch (kv_command.op()) {
-  case kv_command::KVCommand_Op_PUT:
-    if (!kv_command.has_value()) {
-      return std::unexpected(Error::INVALID_INPUT);
-    }
-    return this->put(std::move(*kv_command.mutable_key()),
-                     std::move(*kv_command.mutable_value()));
-  case kv_command::KVCommand_Op_GET:
-    return this->get(kv_command.key());
-  case kv_command::KVCommand_Op_DELETE:
-    return this->remove(kv_command.key());
-  default:
-    return std::unexpected(Error::INVALID_INPUT);
   }
 }
 } // namespace distributed_key_value_store::kv_store

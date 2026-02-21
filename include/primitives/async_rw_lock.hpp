@@ -6,23 +6,20 @@
 #include <boost/system/error_code.hpp>
 #include <cstddef>
 
-using boost::asio::awaitable;
-using boost::asio::use_awaitable;
-using boost::system::error_code;
-
 namespace distributed_key_value_store::primitives {
 class AsyncRwLock {
 private:
-  boost::asio::experimental::concurrent_channel<void(error_code)> channel_;
-  static constexpr int MAX_READERS = 12;
+  boost::asio::experimental::concurrent_channel<void(boost::system::error_code)>
+      channel_;
+  static constexpr int MAX_READERS = 6;
 
-  awaitable<void> read_lock() {
-    co_await channel_.async_receive(use_awaitable);
+  boost::asio::awaitable<void> read_lock() {
+    co_await channel_.async_receive(boost::asio::use_awaitable);
   }
 
-  void read_unlock() { channel_.try_send(error_code()); }
+  void read_unlock() { channel_.try_send(boost::system::error_code{}); }
 
-  awaitable<void> write_lock() {
+  boost::asio::awaitable<void> write_lock() {
     int acquired = 0;
     try {
       for (; acquired < MAX_READERS; acquired++) {
@@ -87,16 +84,16 @@ public:
   explicit AsyncRwLock(boost::asio::any_io_executor executor)
       : channel_(executor, MAX_READERS) {
     for (int i = 0; i < MAX_READERS; i++) {
-      channel_.try_send(error_code());
+      channel_.try_send(boost::system::error_code{});
     }
   }
 
-  awaitable<ReadGuard> read() {
+  boost::asio::awaitable<ReadGuard> read() {
     co_await read_lock();
     co_return ReadGuard(*this);
   }
 
-  awaitable<WriteGuard> write() {
+  boost::asio::awaitable<WriteGuard> write() {
     co_await write_lock();
     co_return WriteGuard(*this);
   }

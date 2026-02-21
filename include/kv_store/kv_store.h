@@ -1,5 +1,4 @@
 #pragma once
-#include "kv_command.pb.h"
 #include "utils.h"
 #include <expected>
 #include <string>
@@ -14,9 +13,6 @@ public:
                                                  std::string value);
 
   [[nodiscard]] std::expected<Result, Error> remove(std::string key);
-
-  [[nodiscard]] std::expected<Result, Error>
-  process(kv_command::KVCommand kv_command);
 
 private:
   std::unordered_map<std::string, std::string> data_;

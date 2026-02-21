@@ -28,9 +28,9 @@ static constexpr int WORKER_THREADS = 7;
 static constexpr int TASKS = 300;
 
 TEST(SharedKVStoreTests, BasicPutGet) {
-  boost::asio::thread_pool thread_pool;
+  boost::asio::thread_pool thread_pool(6);
   auto guard = boost::asio::make_work_guard(thread_pool);
-  SharedKVStore data_store(boost::asio::make_strand(thread_pool));
+  SharedKVStore data_store(thread_pool.get_executor());
 
   auto puts = boost::asio::co_spawn(
       thread_pool,
