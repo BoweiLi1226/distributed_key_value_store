@@ -1,5 +1,5 @@
-#include "distributed_key_value_store/kv_store/kv_store.h"
-#include "distributed_key_value_store/kv_store/utils.h"
+#include "kv_store/kv_store.h"
+#include "kv_store/utils.h"
 #include <expected>
 #include <gtest/gtest.h>
 

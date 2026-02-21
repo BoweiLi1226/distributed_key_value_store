@@ -1,5 +1,6 @@
-#include "distributed_key_value_store/kv_store/shared_kv_store.h"
+#include "kv_store/shared_kv_store.h"
 #include "kv_command.pb.h"
+#include <boost/asio/any_io_executor.hpp>
 #include <boost/asio/awaitable.hpp>
 #include <boost/asio/dispatch.hpp>
 #include <boost/asio/io_context.hpp>
@@ -9,8 +10,8 @@
 #include <utility>
 
 namespace distributed_key_value_store::kv_store {
-SharedKVStore::SharedKVStore(boost::asio::io_context &io_context)
-    : strand_(boost::asio::make_strand(io_context)) {}
+SharedKVStore::SharedKVStore(boost::asio::any_io_executor executor)
+    : strand_(boost::asio::make_strand(executor)) {}
 
 boost::asio::awaitable<std::expected<Result, Error>>
 SharedKVStore::get(std::string key) {

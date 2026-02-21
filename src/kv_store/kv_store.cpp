@@ -1,6 +1,6 @@
-#include "distributed_key_value_store/kv_store/kv_store.h"
-#include "distributed_key_value_store/kv_store/utils.h"
+#include "kv_store/kv_store.h"
 #include "kv_command.pb.h"
+#include "kv_store/utils.h"
 #include <expected>
 
 namespace distributed_key_value_store::kv_store {
